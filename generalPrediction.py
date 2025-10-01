@@ -17,3 +17,28 @@ def load_matches(fileName, teamName):
 
 sunderlandMatches = load_matches('cleanData.csv', 'Sunderland')
 sheffieldMatches = load_matches('cleanData.csv', 'Sheffield United')
+
+# GENERAL OUTCOME
+print ('Prediction For General Outcome Based On Performance Of All Games Played Across The Season')
+
+sunW = 0
+sunD = 0
+sunL = 0
+sheW = 0
+sheD = 0
+sheL = 0
+with open('cleanData.csv', newline='') as csvfile:
+    reader = csv.DictReader(csvfile)
+    for row in reader:
+        if ((row['Team'] == 'Sunderland') and (row['Outcome'] == 'W')):
+            sunW = sunW+1
+        elif ((row['Team'] == 'Sunderland') and (row['Outcome'] == 'D')):
+            sunD = sunD+1
+        elif ((row['Team'] == 'Sunderland') and (row['Outcome'] == 'L')):
+            sunL = sunL+1
+        elif ((row['Team'] == 'Sheffield United') and (row['Outcome'] == 'W')):
+            sheW = sheW+1
+        elif ((row['Team'] == 'Sheffield United') and (row['Outcome'] == 'D')):
+            sheD = sheD+1
+        elif ((row['Team'] == 'Sheffield United') and (row['Outcome'] == 'L')):
+            sheL = sheL+1
