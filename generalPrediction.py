@@ -42,3 +42,10 @@ with open('cleanData.csv', newline='') as csvfile:
             sheD = sheD+1
         elif ((row['Team'] == 'Sheffield United') and (row['Outcome'] == 'L')):
             sheL = sheL+1
+
+if ((((sunW/len(sunderlandMatches))*100) + ((sheL/len(sheffieldMatches))*100)) > (((sheW/len(sheffieldMatches))*100)) + ((sunL/len(sunderlandMatches))*100)):
+    print("Sunderland more likely to win")
+elif ((((sunL / len(sunderlandMatches)) * 100) + ((sheW / len(sheffieldMatches)) * 100)) > (((sheL / len(sheffieldMatches)) * 100)) + ((sunW / len(sunderlandMatches)) * 100)):
+    print("Sheffield United more likely to win")
+else:
+    print("Both teams had the same win percentage")
