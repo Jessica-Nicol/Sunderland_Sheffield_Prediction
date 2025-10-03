@@ -1,54 +1,45 @@
 import csv
 
-def load_matches(fileName, teamName):
-    matches = []
-    with open(fileName, newline='') as csvfile:
-        reader = csv.DictReader(csvfile)
-        for row in reader:
-            if row['Team'] == teamName:
-                matches.append({
-                    'goalsFor': int(row['GoalsFor']),
-                    'goalsAgainst': int(row['GoalsAgainst']),
-                    'opponent': (row['Opponent']),
-                    'home': (row['Home']),
-                    'outcome': (row['Outcome']),
-                })
-    return matches
-
-sunderlandMatches = load_matches('cleanData.csv', 'Sunderland')
-sheffieldMatches = load_matches('cleanData.csv', 'Sheffield United')
-
 # GENERAL OUTCOME
 print ('Prediction For General Outcome Based On Performance Of All Games Played Across The Season')
 
-sunW = 0
-sunD = 0
-sunL = 0
-sheW = 0
-sheD = 0
-sheL = 0
-with open('cleanData.csv', newline='') as csvfile:
-    reader = csv.DictReader(csvfile)
-    for row in reader:
-        if ((row['Team'] == 'Sunderland') and (row['Outcome'] == 'W')):
-            sunW = sunW+1
-        elif ((row['Team'] == 'Sunderland') and (row['Outcome'] == 'D')):
-            sunD = sunD+1
-        elif ((row['Team'] == 'Sunderland') and (row['Outcome'] == 'L')):
-            sunL = sunL+1
-        elif ((row['Team'] == 'Sheffield United') and (row['Outcome'] == 'W')):
-            sheW = sheW+1
-        elif ((row['Team'] == 'Sheffield United') and (row['Outcome'] == 'D')):
-            sheD = sheD+1
-        elif ((row['Team'] == 'Sheffield United') and (row['Outcome'] == 'L')):
-            sheL = sheL+1
+def loadMatches(fileName, teamName):
+    matches = []
+    with open('cleanData.csv', newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            if row['Team'] == teamName:
+                matches.append(row['Outcome'])
+    return matches
 
-if ((((sunW/len(sunderlandMatches))*100) + ((sheL/len(sheffieldMatches))*100)) > (((sheW/len(sheffieldMatches))*100)) + ((sunL/len(sunderlandMatches))*100)):
-    print("Sunderland more likely to win")
-elif ((((sunL / len(sunderlandMatches)) * 100) + ((sheW / len(sheffieldMatches)) * 100)) > (((sheL / len(sheffieldMatches)) * 100)) + ((sunW / len(sunderlandMatches)) * 100)):
-    print("Sheffield United more likely to win")
-else:
-    print("Both teams had the same win percentage")
+sunderlandOutcome = loadMatches('cleanData.csv', 'Sunderland')
+sheffieldOutcome = loadMatches('cleanData.csv', 'Sheffield United')
+
+def outcomeStats(Outcome):
+    total = len(Outcome)
+    winPercentage = (Outcome.count('W')/total)*100
+    lossPercentage = (Outcome.count('L')/total)*100
+    drawPercentage = (Outcome.count('D')/total)*100
+    return winPercentage, lossPercentage, drawPercentage
+sunW, sunL, sunD = outcomeStats(sunderlandOutcome)
+sheW, sheL, sheD = outcomeStats(sheffieldOutcome)
+
+print (f"Sunderland:\nW: {sunW:.2f}\nL: {sunL:.2f}\nD: {sunD:.2f}")
+print (f"Sheffield United:\nW: {sheW:.2f}\nL: {sheL:.2f}\nD: {sheD:.2f}")
+
+def predictOutcome(sunW, sunL, sunD, sheW, sheL, sheD):
+    winScore = (sunW + sheL)/2
+    lossScore = (sunL + sheW)/2
+    drawScore = (sunD + sheD)/2
+
+    if winScore > max(lossScore, drawScore):
+        return "Predicted Outcome: Sunderland to Win"
+    elif lossScore > max(winScore, drawScore):
+        return "Predicted Outcome: Sheffield United to Win"
+    else:
+        return "Predicted Outcome: Draw"
+
+print (predictOutcome(sunW, sunL, sunD, sheW, sheL, sheD))
 
 # H2H EXACT SCORE
 h2h = []
@@ -57,15 +48,10 @@ print ('List of H2H Games:')
 with open('cleanData.csv', newline='') as csvfile:
     reader = csv.DictReader(csvfile)
     for row in reader:
-        if (row['Team'] == 'Sunderland' and row['Opponent'] == 'Sheffield United') or (row['Team'] == 'Sheffield United' and row['Opponent'] == 'Sunderland'):
-            if row['Team'] == 'Sunderland':
-                sunderlandGoals = int(row['GoalsFor'])
-                sheffieldGoals = int(row['GoalsAgainst'])
-                print('Sunderland ', sunderlandGoals, ' - Sheffield United ', sheffieldGoals)
-            else:
-                sunderlandGoals = int(row['GoalsAgainst'])
-                sheffieldGoals = int(row['GoalsFor'])
-                print('Sheffield United ', sheffieldGoals, ' - Sunderland ', sunderlandGoals)
+        if row['Team'] == 'Sunderland' and row['Opponent'] == 'Sheffield United':
+            sunderlandGoals = int(row['GoalsFor'])
+            sheffieldGoals = int(row['GoalsAgainst'])
+            print('Sunderland ', sunderlandGoals, ' - Sheffield United ', sheffieldGoals)
             h2h.append((sunderlandGoals, sheffieldGoals))
 
 avgSheffield = sum(m[1] for m in h2h) / len(h2h)
