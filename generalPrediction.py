@@ -49,3 +49,25 @@ elif ((((sunL / len(sunderlandMatches)) * 100) + ((sheW / len(sheffieldMatches))
     print("Sheffield United more likely to win")
 else:
     print("Both teams had the same win percentage")
+
+# H2H EXACT SCORE
+h2h = []
+print ('Analysis Using H2H Games Played')
+print ('List of H2H Games:')
+with open('cleanData.csv', newline='') as csvfile:
+    reader = csv.DictReader(csvfile)
+    for row in reader:
+        if (row['Team'] == 'Sunderland' and row['Opponent'] == 'Sheffield United') or (row['Team'] == 'Sheffield United' and row['Opponent'] == 'Sunderland'):
+            if row['Team'] == 'Sunderland':
+                sunderlandGoals = int(row['GoalsFor'])
+                sheffieldGoals = int(row['GoalsAgainst'])
+                print('Sunderland ', sunderlandGoals, ' - Sheffield United ', sheffieldGoals)
+            else:
+                sunderlandGoals = int(row['GoalsAgainst'])
+                sheffieldGoals = int(row['GoalsFor'])
+                print('Sheffield United ', sheffieldGoals, ' - Sunderland ', sunderlandGoals)
+            h2h.append((sunderlandGoals, sheffieldGoals))
+
+avgSheffield = sum(m[1] for m in h2h) / len(h2h)
+avgSunderland = sum(m[0] for m in h2h) / len(h2h)
+print ('Predicted H2H Score: Sunderland ', round(avgSunderland), ' - Sheffield United ', round(avgSheffield))
