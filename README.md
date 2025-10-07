@@ -2,7 +2,7 @@
 ### This project analyses Sunderland AFC and Sheffield United's performance over the full 2024/25 Championship Season
 The data used predicts:
 - General outcome (Win/Draw/Loss) based on percentages of outcomes for both teams during the season
-- Exact score prediction using H2H data from the 
+- Exact score prediction using H2H data from the season
 
 ## The Dataset
 The dataset used for this project can be found in the [cleanData.csv](cleanData.csv) file, each row represents a match played by either team (specified in the Team column) and information about each match, such as goals for and against, and result.
